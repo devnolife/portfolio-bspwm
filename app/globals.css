@@ -23,18 +23,6 @@ body {
   height: 6px;
 }
 
-::-webkit-scrollbar-track {
-  background: #1a1b26;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #24283b;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #f7768e;
-}
 
 @layer base {
   :root {

@@ -1,8 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
-import { Activity, Battery, Volume2, Wifi, Music, HardDrive, PlayCircle, PauseCircle, SkipForward, SkipBack, MemoryStickIcon as Memory, Monitor, MessageCircle, Settings, Power } from 'lucide-react'
+import { Battery, Volume2, Wifi, PlayCircle, PauseCircle, SkipForward, SkipBack, MemoryStickIcon as Memory, Monitor, MessageCircle, Settings, Power, User, Code, Github, Linkedin, Folder, Calendar, Mail, Sun, Moon, Headphones, BarChart2, Clock, Quote } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import React from 'react'
+import MusicCard from './navbar/MusicPlay'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface PolybarProps {
   workspaces: string[]
@@ -10,11 +13,18 @@ interface PolybarProps {
   setActiveWorkspace: (workspace: string) => void
 }
 
+interface MusicCardProps {
+  isPlaying: boolean;
+  // other props
+}
+
 export default function Polybar({ workspaces, activeWorkspace, setActiveWorkspace }: PolybarProps) {
   const [currentTime, setCurrentTime] = useState('')
   const [volume] = useState(35)
   const [battery] = useState(53)
-  const [isPlaying] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [showMusicCard, setShowMusicCard] = useState(false)
 
   useEffect(() => {
     const updateTime = () => {
@@ -28,66 +38,87 @@ export default function Polybar({ workspaces, activeWorkspace, setActiveWorkspac
     return () => clearInterval(interval)
   }, [])
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode)
+  }
+
+  const toggleMusicCard = () => {
+    setShowMusicCard(!showMusicCard)
+    setIsPlaying(!isPlaying)
+  }
+
+  const iconKiri = [
+    <a href="#home"><img src="/images/icon.png" alt="Home" className="w-6 h-6" /></a>,
+    <div className="border-l-2 border-white h-5"></div>,
+    <a href="#about"><User size={12} className="text-green-400" /></a>,
+    <a href="#blog"><MessageCircle size={12} className="text-green-400" /></a>,
+    <a href="#projects"><Folder size={12} className="text-green-400" /></a>,
+    <a href="#contact"><Mail size={12} className="text-green-400" /></a>
+  ]
+
+  const iconTengah = [
+    <a href="https://github.com/your-profile" target="_blank" rel="noopener noreferrer"><Github size={14} className="text-white" /></a>,
+    <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer"><Linkedin size={14} className="text-blue-400" /></a>,
+    <Folder size={14} className="text-yellow-400" />,
+    <Calendar size={14} className="text-purple-400" />,
+    <Mail size={14} className="text-red-400" />,
+    <Button onClick={toggleTheme} className="hover:text-[#f7768e]">{isDarkMode ? <Sun size={14} /> : <Moon size={14} />}</Button>
+  ]
+
+  const iconKanan = [
+    <Headphones size={12} className="text-[#f7768e]" onClick={toggleMusicCard} />,
+    <Volume2 size={12} />,
+    <Battery size={12} className="text-yellow-400" />,
+    <Wifi size={12} className="text-green-400" />,
+    <BarChart2 size={12} className="text-blue-400" />,
+    <Clock size={12} className="text-white" />,
+    <Quote size={12} className="text-gray-400" />
+  ]
+
   return (
-    <nav className="bg-[#1a1b26]/90 backdrop-blur-sm text-gray-300 h-8 px-2 flex justify-between items-center shadow-lg text-xs font-mono rounded-lg border border-[#24283b]/50">
+    <nav className="bg-[#132d45]/90 backdrop-blur-sm text-gray-300 h-10 px-2 flex justify-between items-center shadow-lg text-xs font-mono rounded-lg border border-[#24283b]/50">
       {/* Left section */}
       <div className="flex items-center space-x-4">
-        <div className="text-blue-400 flex items-center">
-          <span className="text-sm">λ</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Activity size={12} className="text-rose-400" />
-          <span>1%</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <HardDrive size={12} className="text-blue-400" />
-          <span>1.73 GiB</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Memory size={12} className="text-green-400" />
-          <span>11.31 GB</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <button className="hover:text-[#f7768e]">
-            <SkipBack size={12} />
-          </button>
-          <button className="hover:text-[#f7768e]">
-            {isPlaying ? <PauseCircle size={14} /> : <PlayCircle size={14} />}
-          </button>
-          <button className="hover:text-[#f7768e]">
-            <SkipForward size={12} />
-          </button>
-        </div>
+        {iconKiri.map((icon, index) => (
+          <div key={index} className="flex items-center space-x-1">
+            {React.cloneElement(icon, { size: 16 })}
+          </div>
+        ))}
       </div>
 
       {/* Center section */}
       <div className="flex items-center space-x-3">
-        <Monitor size={14} className="text-purple-400" />
-        <MessageCircle size={14} className="text-blue-400" />
-        <Settings size={14} className="text-yellow-400" />
-        <Power size={14} className="text-rose-400" />
+        {iconTengah.map((icon, index) => (
+          <div key={index} className="flex items-center space-x-1">
+            {React.cloneElement(icon, { size: 18 })}
+          </div>
+        ))}
       </div>
 
-      {/* Right section */}
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2">
-          <Music size={12} className="text-[#f7768e]" />
-          <span className="px-1 py-0.5 rounded bg-[#24283b]">In The Dark</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Volume2 size={12} />
-          <span>{volume}</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Battery size={12} className="text-yellow-400" />
-          <span>{battery}%</span>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Wifi size={12} className="text-green-400" />
-        </div>
-        <div>{currentTime} pm</div>
+      <div className="flex items-center space-x-4 relative">
+        {iconKanan.map((icon, index) => (
+          <div key={index} className="flex items-center space-x-1 relative">
+            {React.cloneElement(icon, { size: 16 })}
+            {index === 0 && (
+              <AnimatePresence>
+                {showMusicCard && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-3.5"
+                  >
+                    <MusicCard isPlaying={isPlaying} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            )}
+          </div>
+        ))}
+        <span>{volume}</span>
+        <span>{battery}%</span>
+        <span>{currentTime}</span>
       </div>
     </nav>
   )
 }
-
